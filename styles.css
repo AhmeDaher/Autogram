@@ -53,6 +53,8 @@ body {
     border-radius: 3px;
 }
 
+
+
 /* English Version Styles */
 .english-version {
     font-family: 'Inter', sans-serif;
@@ -230,6 +232,7 @@ body {
     list-style: none;
     justify-content: center;
     flex-wrap: wrap;
+    flex-direction: row;
     padding: 15px 0;
     gap: 8px;
     margin: 0;
@@ -1460,14 +1463,36 @@ html {
     .navigation {
         position: sticky;
         top: 0;
+        transition: transform 0.3s ease;
+    }
+
+    /* Hide navigation when scrolling down on mobile */
+    .navigation.hidden-mobile {
+        transform: translateY(-100%);
     }
 
     .main-content {
         margin-top: 0;
     }
+}
 
-    .step-content {
-        padding: 20px 80px 20px 20px;
+/* Desktop and Tablet - Ensure horizontal navigation */
+@media (min-width: 769px) {
+    .nav-menu {
+        flex-direction: row !important;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .nav-menu li a {
+        padding: 12px 20px;
+        font-size: 1rem;
+    }
+}
+
+.step-content {
+    padding: 20px 80px 20px 20px;
     }
 
     .step-number {

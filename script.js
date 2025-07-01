@@ -7,8 +7,47 @@ function switchLanguage(lang) {
     }
 }
 
+// Mobile navigation control
+let lastScrollTop = 0;
+
 // Smooth scrolling for navigation links
 document.addEventListener('DOMContentLoaded', function() {
+    const navigation = document.getElementById('navigation');
+
+    // Mobile scroll behavior (only on mobile devices)
+    function handleMobileScroll() {
+        if (window.innerWidth <= 768) {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+            // Hide navigation when scrolling down, show when scrolling up
+            if (scrollTop > lastScrollTop && scrollTop > 100) {
+                // Scrolling down - hide navigation
+                if (navigation) {
+                    navigation.classList.add('hidden-mobile');
+                }
+            } else {
+                // Scrolling up - show navigation
+                if (navigation) {
+                    navigation.classList.remove('hidden-mobile');
+                }
+            }
+
+            lastScrollTop = scrollTop;
+        }
+    }
+
+    // Add scroll event listener
+    window.addEventListener('scroll', handleMobileScroll);
+
+    // Handle window resize
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 768) {
+            // Reset mobile-specific classes on desktop
+            if (navigation) {
+                navigation.classList.remove('hidden-mobile');
+            }
+        }
+    });
     // Get all navigation links
     const navLinks = document.querySelectorAll('.nav-menu a[href^="#"]');
     
