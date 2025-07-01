@@ -9,6 +9,7 @@ function switchLanguage(lang) {
 
 // Mobile navigation control
 let lastScrollTop = 0;
+let ticking = false;
 
 // Smooth scrolling for navigation links
 document.addEventListener('DOMContentLoaded', function() {
@@ -19,25 +20,37 @@ document.addEventListener('DOMContentLoaded', function() {
         if (window.innerWidth <= 768) {
             const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
+            // Prevent negative scroll values
+            if (scrollTop < 0) return;
+
             // Hide navigation when scrolling down, show when scrolling up
-            if (scrollTop > lastScrollTop && scrollTop > 100) {
+            if (scrollTop > lastScrollTop && scrollTop > 50) {
                 // Scrolling down - hide navigation
                 if (navigation) {
                     navigation.classList.add('hidden-mobile');
                 }
-            } else {
+            } else if (scrollTop < lastScrollTop) {
                 // Scrolling up - show navigation
                 if (navigation) {
                     navigation.classList.remove('hidden-mobile');
                 }
             }
 
-            lastScrollTop = scrollTop;
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // For Mobile or negative scrolling
+        }
+    }
+
+    // Throttled scroll event
+    function requestTick() {
+        if (!ticking) {
+            requestAnimationFrame(handleMobileScroll);
+            ticking = true;
+            setTimeout(() => { ticking = false; }, 16); // ~60fps
         }
     }
 
     // Add scroll event listener
-    window.addEventListener('scroll', handleMobileScroll);
+    window.addEventListener('scroll', requestTick, { passive: true });
 
     // Handle window resize
     window.addEventListener('resize', () => {
@@ -46,8 +59,16 @@ document.addEventListener('DOMContentLoaded', function() {
             if (navigation) {
                 navigation.classList.remove('hidden-mobile');
             }
+        } else {
+            // Reset scroll position tracking on mobile
+            lastScrollTop = 0;
         }
     });
+
+    // Initial check for mobile
+    if (window.innerWidth <= 768) {
+        lastScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    }
     // Get all navigation links
     const navLinks = document.querySelectorAll('.nav-menu a[href^="#"]');
     
